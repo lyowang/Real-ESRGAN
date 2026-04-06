@@ -10,6 +10,7 @@ Usage:
 Endpoints:
     GET  /health          Health check
     GET  /models          List available models
+    GET  /docs            API documentation
     POST /upscale         Upscale a single image
     POST /upscale/video   Upscale a video file
 """
@@ -240,6 +241,54 @@ def list_models():
             'weights_downloaded': os.path.isfile(weight_path),
         })
     return jsonify({'models': models})
+
+
+@app.route('/docs', methods=['GET'])
+def api_docs():
+    """Return the API documentation as markdown or rendered HTML."""
+    docs_path = os.path.join(ROOT_DIR, 'docs', 'web_service_api.md')
+    if not os.path.isfile(docs_path):
+        return jsonify({'error': 'API documentation file not found.'}), 404
+
+    with open(docs_path, 'r', encoding='utf-8') as f:
+        content = f.read()
+
+    # Return HTML if browser, markdown if API client
+    accept = request.headers.get('Accept', '')
+    if 'text/html' in accept:
+        # Wrap markdown in a simple styled HTML page
+        html = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-ESRGAN Web Service API</title>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        body {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+               max-width: 900px; margin: 0 auto; padding: 2rem; line-height: 1.6;
+               color: #e0e0e0; background: #1a1a2e; }}
+        pre {{ background: #16213e; padding: 1rem; border-radius: 8px; overflow-x: auto; }}
+        code {{ font-family: 'Fira Code', 'Consolas', monospace; font-size: 0.9em; }}
+        table {{ border-collapse: collapse; width: 100%; margin: 1rem 0; }}
+        th, td {{ border: 1px solid #333; padding: 0.5rem 0.75rem; text-align: left; }}
+        th {{ background: #16213e; }}
+        a {{ color: #4fc3f7; }}
+        h1, h2, h3 {{ color: #bb86fc; }}
+        hr {{ border: 1px solid #333; }}
+        blockquote {{ border-left: 4px solid #bb86fc; margin-left: 0; padding-left: 1rem; color: #aaa; }}
+    </style>
+</head>
+<body>
+    <div id="content"></div>
+    <script>
+        document.getElementById('content').innerHTML = marked.parse({repr(content)});
+    </script>
+</body>
+</html>"""
+        return html, 200, {'Content-Type': 'text/html; charset=utf-8'}
+    else:
+        return content, 200, {'Content-Type': 'text/markdown; charset=utf-8'}
 
 
 @app.route('/upscale', methods=['POST'])
@@ -544,6 +593,7 @@ def not_found(error):
         'available_endpoints': {
             'GET /health': 'Health check',
             'GET /models': 'List available models',
+            'GET /docs': 'API documentation',
             'POST /upscale': 'Upscale an image',
             'POST /upscale/video': 'Upscale a video',
         },
