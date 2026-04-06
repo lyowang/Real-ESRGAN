@@ -610,7 +610,7 @@ def parse_args():
                         help='Host to bind to. Default: 0.0.0.0')
     parser.add_argument('--port', type=int, default=8288,
                         help='Port to listen on. Default: 8288')
-    parser.add_argument('-g', '--gpu-id', type=int, default=None,
+    parser.add_argument('-g', '--gpu-id', type=int, default=0,
                         help='GPU device to use (default=auto)')
     parser.add_argument('--fp32', action='store_true',
                         help='Use fp32 precision. Default: fp16 (half)')
