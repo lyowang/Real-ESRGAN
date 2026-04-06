@@ -5,7 +5,7 @@ A Flask-based HTTP API that wraps Real-ESRGAN's super-resolution inference,
 allowing remote clients to upscale images and videos via HTTP requests.
 
 Usage:
-    python web_service.py [--host 0.0.0.0] [--port 5000] [--gpu-id 0] [--fp32]
+    python web_service.py [--host 0.0.0.0] [--port 8288] [--gpu-id 0] [--fp32]
 
 Endpoints:
     GET  /health          Health check
@@ -558,8 +558,8 @@ def parse_args():
     parser = argparse.ArgumentParser(description='Real-ESRGAN Web Service')
     parser.add_argument('--host', type=str, default='0.0.0.0',
                         help='Host to bind to. Default: 0.0.0.0')
-    parser.add_argument('--port', type=int, default=5000,
-                        help='Port to listen on. Default: 5000')
+    parser.add_argument('--port', type=int, default=8288,
+                        help='Port to listen on. Default: 8288')
     parser.add_argument('-g', '--gpu-id', type=int, default=None,
                         help='GPU device to use (default=auto)')
     parser.add_argument('--fp32', action='store_true',

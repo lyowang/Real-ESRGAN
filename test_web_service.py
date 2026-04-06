@@ -4,7 +4,7 @@ import os
 import sys
 import time
 
-BASE_URL = "http://127.0.0.1:5000"
+BASE_URL = "http://127.0.0.1:8288"
 
 def test_health():
     print("=" * 50)
